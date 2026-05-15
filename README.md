@@ -47,25 +47,64 @@
 - API_BASE_URL - базовый адрес
 - TIMEOUT - таймаут запросов
 
+## Настройка интеграции Allure TestOps и Jenkins
+
+### 1. Настройка в Allure TestOps
+
+- Создан проект: **Dmitrii_Ivantsov** (ID: 5200)
+- Проект публичный (Public)
+- Добавлен пользователь `jenkins_agent_service_acc` с правами **Запись (Write)** для загрузки результатов из Jenkins
+
+### 2. Настройка в Jenkins
+
+**Тип джобы:** Freestyle project  
+**Название:** `QA_GURU_20_Dmitrii_Freestyle`
+
+**Основные параметры:**
+- `Restrict where this project can be run` → `python`
+- Source Code Management → Git → `https://github.com/1DimonNT/20.-Allure-TestOps.git`
+- Branch: `*/main`
+
+**Build Environment:**
+- `Delete workspace before build starts`
+- `Add timestamps to the Console Output`
+- **`Allure: upload results`**
+  - Server: `allure-server`
+  - Project: `Dmitrii_Ivantsov`
+  - Launch name: `${JOB_NAME} - #${BUILD_NUMBER}`
+  - Results path: `allure-results`
+
+**Build Steps (Execute shell):**
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+pytest --alluredir=allure-results || true
 ## Запуск тестов
+```
 
 Установка зависимостей:
+```bash
 pip install -r requirements.txt
-
+```
 Запуск всех тестов:
+```bash
 pytest -v
-
+```
 Запуск с маркерами:
+```bash
 pytest -m smoke -v
 pytest -m regression -v
 pytest -m schema -v
-
+```
 Запуск конкретного файла:
+```bash
 pytest tests/test_clubs_list.py -v
-
+```
 Запуск одного теста:
+```bash
 pytest tests/test_clubs_list.py::test_get_clubs_list_status_code -v
-
+```
 ## Результаты
 
 Всего тестов: 23
