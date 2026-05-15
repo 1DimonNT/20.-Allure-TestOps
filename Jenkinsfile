@@ -24,6 +24,7 @@ pipeline {
 
         stage('Upload to Allure TestOps') {
             steps {
+                sh 'apt-get update && apt-get install -y curl'
                 sh 'curl -L0 https://github.com/allure-framework/allurectl/releases/latest/download/allurectl_linux_amd64 -o ./allurectl'
                 sh 'chmod +x ./allurectl'
                 sh './allurectl upload allure-results'
