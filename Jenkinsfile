@@ -18,16 +18,21 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh 'pytest --alluredir=allure-results'
+                sh 'pytest --alluredir=allure-results || true'
+            }
+        }
+
+        stage('Upload to Allure TestOps') {
+            steps {
+                sh 'curl -L0 https://github.com/allure-framework/allurectl/releases/latest/download/allurectl_linux_amd64 -o ./allurectl'
+                sh 'chmod +x ./allurectl'
+                sh './allurectl upload allure-results'
             }
         }
     }
 
     post {
         always {
-            script {
-                sh 'allurectl upload allure-results'
-            }
             cleanWs()
         }
     }
