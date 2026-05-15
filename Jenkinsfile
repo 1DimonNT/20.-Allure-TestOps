@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+        label 'python3'
+    }
 
     environment {
         ALLURE_ENDPOINT = 'https://allure.autotests.cloud/'
@@ -8,28 +10,21 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
         stage('Setup Python') {
             steps {
-                bat 'python -m venv venv'
-                bat 'venv\\Scripts\\activate && pip install -r requirements.txt'
+                sh 'pip install -r requirements.txt'
             }
         }
 
         stage('Run tests') {
             steps {
-                bat 'venv\\Scripts\\activate && pytest --alluredir=allure-results'
+                sh 'pytest --alluredir=allure-results'
             }
         }
 
         stage('Upload to Allure TestOps') {
             steps {
-                bat 'venv\\Scripts\\activate && allurectl upload allure-results'
+                sh 'allurectl upload allure-results'
             }
         }
     }
