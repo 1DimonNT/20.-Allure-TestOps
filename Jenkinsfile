@@ -1,9 +1,5 @@
 pipeline {
-    agent {
-        node {
-            label 'python3-jenkins-agent-1'
-        }
-    }
+    agent any
 
     environment {
         ALLURE_ENDPOINT = 'https://allure.autotests.cloud/'
@@ -23,16 +19,13 @@ pipeline {
                 sh 'pytest --alluredir=allure-results'
             }
         }
-
-        stage('Upload') {
-            steps {
-                sh 'allurectl upload allure-results'
-            }
-        }
     }
 
     post {
         always {
+            script {
+                sh 'allurectl upload allure-results'
+            }
             cleanWs()
         }
     }
