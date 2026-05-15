@@ -1,6 +1,8 @@
 pipeline {
     agent {
-        label 'python3'
+        node {
+            label 'python3-jenkins-agent-1'
+        }
     }
 
     environment {
@@ -10,19 +12,19 @@ pipeline {
     }
 
     stages {
-        stage('Setup Python') {
+        stage('Setup') {
             steps {
                 sh 'pip install -r requirements.txt'
             }
         }
 
-        stage('Run tests') {
+        stage('Test') {
             steps {
                 sh 'pytest --alluredir=allure-results'
             }
         }
 
-        stage('Upload to Allure TestOps') {
+        stage('Upload') {
             steps {
                 sh 'allurectl upload allure-results'
             }
