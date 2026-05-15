@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+        label 'python3-jenkins-agent-1'
+    }
 
     environment {
         ALLURE_ENDPOINT = 'https://allure.autotests.cloud/'
@@ -10,7 +12,7 @@ pipeline {
     stages {
         stage('Setup') {
             steps {
-                sh 'pip install -r requirements.txt'
+                sh 'pip install --break-system-packages -r requirements.txt'
             }
         }
 
